@@ -22,7 +22,7 @@ class UserProfileManager(BaseUserManager):
 
   def create_superuser(self, email, name, password):
     """create super user with given details"""
-    user.self.create(email, name, password)
+    user = self.create_user(email, name, password)
 
     user.is_superuser = True
     user.is_staff = True
@@ -41,7 +41,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
   objects = UserProfileManager()
 
   USERNAME_FIELD = 'email'      #replacing the default django user name field with the email
-  REQUIRED_FIELDs = ['name']
+  REQUIRED_FIELDS = ['name']
 
   def get_full_name(self):
     """Retrieve full name user"""
