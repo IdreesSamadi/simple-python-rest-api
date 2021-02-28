@@ -1,6 +1,34 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionMixin
+from django.contrib.auth.models import BaseUserManager
+
+
+#classes in python should have two spaces between them
+class UserProfileManager(BaseUserManager):
+  """Manager for user profile"""
+  def create_user(self, email, name, password=None):
+    """create a new user profile"""
+    if not email:     #checking for error
+      raise ValueError('user must have an email address') 
+
+    email = self.normalize_email(email)       # making email lower case
+    user = self.model(email=email, name=name)
+
+    user.set_password(password)           #hashing the password
+    user.save(using=self._db)             #saving to db,  supports for multiple db
+
+    return user
+
+  def create_superuser(self, email, name, password):
+    """create super user with given details"""
+    user.self.create(email, name, password)
+
+    user.is_superuser = True
+    user.is_staff = True
+    user.save(using=self._db)
+
+    return user
 
 
 class UserProfile(AbstractBaseUser, PermissionMixin): 
@@ -12,7 +40,7 @@ class UserProfile(AbstractBaseUser, PermissionMixin):
 
   objects = UserProfileManager()
 
-  USERNAME_FIELD = 'email'
+  USERNAME_FIELD = 'email'      #replacing the default django user name field with the email
   REQUIRED_FIELDs = ['name']
 
   def get_full_name(self):
